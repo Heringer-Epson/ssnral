@@ -1,41 +1,40 @@
 #!/usr/bin/env python
 
-import os
-import sys
 import sys, os, time
-import shutil
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.ticker import MultipleLocator
 from astropy import units as u
+
 from generic_input_pars import Generic_Pars
 from build_fsps_model import Build_Fsps
-
-sys.path.append(
-  os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 from Dcolor2sSNRL_gen import Generate_Curve
 from SN_rate import Model_Rates
 
+#Ste plotting variables.
 mpl.rcParams['mathtext.fontset'] = 'stix'
 mpl.rcParams['mathtext.fontset'] = 'stix'
 mpl.rcParams['font.family'] = 'STIXGeneral'  
-fs = 24.   
-taus = [1., 1.5, 2., 3., 4., 5., 7., 10.]
+fs = 24. #Fontsize.
+lw = 3. #line width.
+cZ = ['#fc9272','#ef3b2c','#a50f15']
+ct = ['#a6bddb','#3690c0','#016450']
+lsZ = ['--', '-', '-.']
+lst = ['--', '-.', '-']
 
+taus = [1., 1.5, 2., 3., 4., 5., 7., 10.]
 s1s2 = zip([-1., -1.5, -2., -1., -1.],[-1., -1.5, -.5, -2.,-3.])
 label = [r'-1/-1', r'-1.5/-1.5', r'-2/-0.5', r'-1/-2', r'-1/-3']
 
-class Plot_sSNRL(object):
+class Plot_Tests(object):
     """
     Description:
     ------------
-    Makes the Fig. 1 of the DTD paper, displaying SN rate (per unit of
-    luminosity) as a function of Dcolor. 4 panels are included, showing the
-    impact of choosing different parameters, such as the IMF, the metallicity,
-    the SFH and the time of onset of SNe Ia. Similar replicates Fig. 3
-    in Heringer+ 2017.
+    Makes the auxiliar figure for the DTD paper, displaying SN rate
+    (per unit of luminosity) as a function of Dcolor. 2 panels are included,
+    showing the impact of choosing different metallicities (left panel)
+    or onset time (right panel).
 
     Parameters:
     -----------
@@ -43,13 +42,6 @@ class Plot_sSNRL(object):
         True of False. Whether to show or not the produced figure.
     save_fig : ~bool
         True of False. Whether to save or not the produced figure.
-
-    Notes:
-    ------
-    The normalization used here is different than in Heringer+ 2017. In that
-    paper the DTD is normalized at 0.5 Gyr, whereas here an arbitraty
-    constant (A=10**-12) is given to the DTD of the form SN rate = A*t**s1
-    where s1 is the slope prior to 1 Gyr. 
              
     Outputs:
     --------
@@ -91,7 +83,7 @@ class Plot_sSNRL(object):
 
         self.ax2.set_xlabel(x_label, fontsize=fs)
         self.ax2.set_xlim(-1.05,0.35)
-        self.ax2.set_ylim(-14.75,-11.25)
+        self.ax2.set_ylim(-14.75,-10.75)
         self.ax2.tick_params(axis='y', which='major', labelsize=fs, pad=8)      
         self.ax2.tick_params(axis='x', which='major', labelsize=fs, pad=8)
         self.ax2.tick_params('both', length=12, width=2., which='major',
@@ -106,54 +98,62 @@ class Plot_sSNRL(object):
 
     def plot_models(self):
 
-        #Add SFH text. 
-        self.ax1.text(-0.9, -14.6, 'SFH: exponential', fontsize=fs )
-        self.ax2.text(-0.9, -14.6, 'SFH: delayed exponential', fontsize=fs )
-        
-        for l, sfh in enumerate(['exponential', 'delayed-exponential']):
-            _inputs = Generic_Pars(sfh, 'Kroupa', '0.0190', 1.e8 * u.yr)
-            _D = Build_Fsps(_inputs).D
+        for k, Z in enumerate(['0.0150', '0.0190', '0.0300']):
+            _inputs = Generic_Pars('exponential', 'Kroupa', Z, 100.e6 * u.yr)
+            _D = Build_Fsps(_inputs).D        
 
-            if l == 0:
-                ax = self.ax1
-            elif l == 1:
-                ax = self.ax2
-            
             for i, (s1,s2) in enumerate(s1s2):
                 Sgen = Generate_Curve(_inputs, _D, s1, s2)
-                
-                x = Sgen.Dcolor_at10Gyr
-                y = np.log10(Sgen.sSNRL_at10Gyr * 1.e-12)                 
-                ax.plot(x, y, ls='None', marker='s', markersize=12., color='b',
-                        fillstyle='none', zorder=2)
-
-                x = Sgen.Dcolor_at1Gyr
-                y = np.log10(Sgen.sSNRL_at1Gyr * 1.e-12)            
-                ax.plot(x, y, ls='None', marker='o', markersize=12., color='b',
-                        fillstyle='none', zorder=2)
-
-                #Plot Dcolor-sSNRL for each tau.
-                for tau in _inputs.tau_list:
-                    TS = str(tau.to(u.yr).value / 1.e9)
-                    model = Model_Rates(_inputs, _D, TS, s1, s2)
-                    x = _D['Dcolor_' + TS]
-                    y = np.log10(model.sSNRL * 1.e-12)
-                    ax.plot(x, y, ls='-', marker='None', color='r',
-                            linewidth=.8, alpha=0.4, zorder=1)                    
-
-                #Add extended models.
                 x = Sgen.Dcd_fine
                 y = np.log10(Sgen.sSNRL_fine * 1.e-12)
-                ax.plot(x, y, ls='--', marker='None', markersize=8.,
-                        color='forestgreen', linewidth=3., zorder=3)                                
+                self.ax1.plot(x, y, ls=lsZ[k], marker='None',
+                              color=cZ[k], linewidth=lw, zorder=3)   
+                if k==2:
+                    self.ax1.text(0.05, y[-1] + 0.05, label[i], color='k', fontsize=fs)
+        
+        for k, t_ons in enumerate([40.e6 * u.yr, 70.e6 * u.yr, 100.e6 * u.yr]):
+            _inputs = Generic_Pars('exponential', 'Kroupa', '0.0190', t_ons)
+            _D = Build_Fsps(_inputs).D        
 
-                ax.text(0.05, y[-1] + 0.05, label[i], color='k', fontsize=fs)
-                        
-            _inputs.clean_fsps_files()
+            for i, (s1,s2) in enumerate(s1s2):
+                Sgen = Generate_Curve(_inputs, _D, s1, s2)
+                x = Sgen.Dcd_fine
+                y = np.log10(Sgen.sSNRL_fine * 1.e-12)
+                self.ax2.plot(x, y, ls=lst[k], marker='None',
+                              color=ct[k], linewidth=lw, zorder=3)   
+                if k==2:
+                    self.ax2.text(0.05, y[-1] + 0.05, label[i], color='k', fontsize=fs)
+
+    def make_legend(self):
+        self.ax1.plot(
+          [np.nan], [np.nan], color=cZ[0], ls=lsZ[0], lw=lw,
+          marker='None', label=r'$Z=0.015$')
+        self.ax1.plot(
+          [np.nan], [np.nan], color=cZ[1], ls=lsZ[1], lw=lw,
+          marker='None', label=r'$Z=0.019$')
+        self.ax1.plot(
+          [np.nan], [np.nan], color=cZ[2], ls=lsZ[2], lw=lw,
+          marker='None', label=r'$Z=0.030$')          
+        self.ax1.legend(
+          frameon=False, fontsize=fs, numpoints=1, ncol=1, labelspacing=.2,
+          handlelength=1.5, handletextpad=.8, loc=3, bbox_to_anchor=(.2, 0.)) 
+
+        self.ax2.plot(
+          [np.nan], [np.nan], color=ct[0], ls=lst[0], lw=lw,
+          marker='None', label=r'$t_{\rm{WD}}=40\, \rm{Myr}$')         
+        self.ax2.plot(
+          [np.nan], [np.nan], color=ct[1], ls=lst[1], lw=lw,
+          marker='None', label=r'$t_{\rm{WD}}=70\, \rm{Myr}$')    
+        self.ax2.plot(
+          [np.nan], [np.nan], color=ct[2], ls=lst[2], lw=lw,
+          marker='None', label=r'$t_{\rm{WD}}=100\, \rm{Myr}$')    
+        self.ax2.legend(
+          frameon=False, fontsize=fs, numpoints=1, ncol=1, labelspacing=.2,
+          handlelength=1.5, handletextpad=.8, loc=3, bbox_to_anchor=(.2, 0.)) 
 
     def manage_output(self):
         if self.save_fig:
-            fpath = './../OUTPUT_FILES/Fig_sSNRL.pdf'
+            fpath = './../OUTPUT_FILES/Fig_sSNRL-tests.pdf'
             plt.savefig(fpath, format='pdf')
         if self.show_fig:
             plt.show() 
@@ -162,8 +162,9 @@ class Plot_sSNRL(object):
     def make_plot(self):
         self.set_fig_frame()
         self.plot_models()
+        self.make_legend()
         self.manage_output()
 
 if __name__ == '__main__':
-    Plot_sSNRL(show_fig=True, save_fig=False)
+    Plot_Tests(show_fig=True, save_fig=True)
  
