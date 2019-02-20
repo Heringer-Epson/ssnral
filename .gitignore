@@ -1,5 +1,6 @@
 #Ignore most of the folders - to remain empty in the repository.
 ./src/*.pyc
+./src/*.so
 ./src/*.lprof
 ./build/*
 
