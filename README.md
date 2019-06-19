@@ -22,15 +22,24 @@ can be obtained by running in the src directory:
 >>python example_plot_rates_2.py
 
 This package makes use of files produced with the
-Flexible Stellar Population Synthetis (FSPS), developed
+Flexible Stellar Population Synthetis (FSPS, v3.0), developed
 and maintained by Charlie Conroy (see references below).
 A python wrapper has also been used (Python-FSPS).
+
 It is not necessary to install these packages for the
-basic applications of tihs package. However, their
+basic applications of this package because relevant FSPS
+are made available under ./fsps_files. However, their
 installation might be necessary if the user intends
 to adopted FSPS runs with other set of parameters
-than available under ./fsps_files 
-
+than available. New FSPS files can be created following the
+format for usage with this package by running
+>>python make_default_FSPS.py.
+However, in order to run this package, FSPS and Python-FSPS
+need to be installed and their directories properly added
+to the bash file (see original documentation for those
+packages).
+FSPS: https://github.com/cconroy20/fsps
+Python-FSPS: http://dfm.io/python-fsps/current/
 
 DTD original work which introduced the ssnral method
 Heringer+ 2017 (H17):
