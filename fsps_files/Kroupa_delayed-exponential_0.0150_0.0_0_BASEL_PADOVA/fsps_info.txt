@@ -1,7 +1,0 @@
-Files created on: 01/02/2019
-FSPS version: 0.3.0
-Isochrones: pdva
-Spectral library: basel
-IMF: Kroupa
-SFH: delayed-exponential
-Metallicity: 0.0150
