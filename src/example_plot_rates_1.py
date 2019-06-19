@@ -47,7 +47,7 @@ class Plot_sSNRL(object):
              
     Outputs:
     --------
-    ./../OUTPUT_FILES/ANALYSES_FIGURES/Fig_sSNRL.pdf
+    ./../OUTPUT_FILES/ANALYSES_FIGURES/Fig_sSNRL_XYZ.pdf
     
     References:
     -----------
@@ -55,7 +55,9 @@ class Plot_sSNRL(object):
     """         
     def __init__(self, show_fig=True, save_fig=False):
         self.show_fig = show_fig
-        self.save_fig = save_fig 
+        self.save_fig = save_fig
+        
+        self._inputs = Generic_Pars() 
        
         self.fig, (self.ax1, self.ax2) = plt.subplots(
           1,2, figsize=(16,8), sharey=True)
@@ -66,8 +68,9 @@ class Plot_sSNRL(object):
 
         plt.subplots_adjust(wspace=0.03)
         
-        x_label = r'$\Delta (g-r)$'
-        y_label = r'$\rm{log\ sSNR}_L\ \rm{[yr^{-1}\ L_\odot^{-1}]}$'
+        x_label = r'$\Delta (' + self._inputs.f2 + '-' + self._inputs.f1 + ')$'
+        y_label = (r'$\rm{log\ sSNR}_{L,' + self._inputs.f0
+                   + r'}\ \rm{[yr^{-1}\ L_\odot^{-1}]}$')
         
         self.ax1.set_xlabel(x_label, fontsize=fs)
         self.ax1.set_ylabel(y_label, fontsize=fs)
@@ -105,7 +108,8 @@ class Plot_sSNRL(object):
         self.ax2.text(-0.9, -14.6, 'SFH: delayed exponential', fontsize=fs )
         
         for l, sfh in enumerate(['exponential', 'delayed-exponential']):
-            _inputs = Generic_Pars(sfh, 'Kroupa', '0.0190', 1.e8 * u.yr)
+            #Get new input pars for each choice of SFH.
+            _inputs = Generic_Pars(sfh_type=sfh)
             _D = Build_Fsps(_inputs).D
 
             if l == 0:
@@ -145,7 +149,8 @@ class Plot_sSNRL(object):
                         
     def manage_output(self):
         if self.save_fig:
-            fpath = './../OUTPUT_FILES/Fig_sSNRL.pdf'
+            suffix = self._inputs.f2 + self._inputs.f1 + self._inputs.f0
+            fpath = './../OUTPUT_FILES/Fig_sSNRL_' + suffix + '.pdf'
             plt.savefig(fpath, format='pdf')
         if self.show_fig:
             plt.show() 

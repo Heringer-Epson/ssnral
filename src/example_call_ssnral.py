@@ -68,4 +68,4 @@ class Produce_Function(object):
 if __name__ == '__main__':
     Produce_Function(
       A=1.e-12, s1=-1., s2=-2., t_onset=.1*u.Gyr, t_cutoff=.1*u.Gyr,
-      Z='0.0190', sfh='exponential', imf='Chabrier')
+      Z='0.0190', sfh='exponential', imf='Kroupa')

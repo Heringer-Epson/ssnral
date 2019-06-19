@@ -28,26 +28,27 @@ class Build_Fsps(object):
         self.D['t_ons'] = self._inputs.t_onset.to(u.Gyr).value
         self.D['t_bre'] = self._inputs.t_cutoff.to(u.Gyr).value
 
-        synpop_dir = os.path.join(os.environ['PATH_ssnarl'],
-                                  'fsps_files/' + self._inputs.fsps_path)   
+        synpop_dir = os.path.join('./../fsps_files/' + self._inputs.fsps_path)   
         
         #Get SSP data and compute the theoretical color with respect to the RS.
         df = pd.read_csv(synpop_dir + 'SSP.dat', header=0, escapechar='#')
         logage_SSP = df[' log_age'].values
-        mag_2_SSP = df[self._inputs.filter_2].values
-        mag_1_SSP = df[self._inputs.filter_1].values
+        mag_2_SSP = df[self._inputs.f2].values
+        mag_1_SSP = df[self._inputs.f1].values
         
         #Retrieve RS color.
         RS_condition = (logage_SSP == 10.0)
         RS_color = mag_2_SSP[RS_condition] - mag_1_SSP[RS_condition]
 
+        self.D['logage'] = logage_SSP
         for i, tau in enumerate(self._inputs.tau_list):
             TS = str(tau.to(u.yr).value / 1.e9)
          
             model = pd.read_csv(synpop_dir + 'tau-' + TS + '.dat', header=0)
             self.D['tau_' + TS] = tau.to(u.Gyr).value
-            self.D['mag2_' + TS] = model[self._inputs.filter_2].values
-            self.D['mag1_' + TS] = model[self._inputs.filter_1].values
+            self.D['mag2_' + TS] = model[self._inputs.f2].values
+            self.D['mag1_' + TS] = model[self._inputs.f1].values
+            self.D['mag0_' + TS] = model[self._inputs.f0].values
             self.D['age_' + TS] = 10.**(model['# log_age'].values) / 1.e9 #Converted to Gyr.
             self.D['int_mass_' + TS] = model['integrated_formed_mass'].values
             self.D['int_stellar_mass_' + TS] = model['integrated_stellar_mass'].values

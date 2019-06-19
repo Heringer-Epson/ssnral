@@ -1,4 +1,5 @@
 #Ignore most of the folders - to remain empty in the repository.
+./src/run_fsps.py*
 ./src/*.pyc
 ./src/*.so
 ./src/*.lprof

@@ -4,6 +4,8 @@ import numpy as np
 import ctypes
 from scipy.integrate import quad
 
+filter2sunmag = {'u': 6.39, 'g': 5.12, 'r': 4.65, 'i': 4.53, 'z': 4.51}
+
 class Model_Rates(object):
     """
     Description:
@@ -57,6 +59,6 @@ class Model_Rates(object):
         
         #4.64 from FSPS https://python-fsps.readthedocs.io/en/latest/filters/
         self.sSNRm = np.divide(self.sSNR,self.D['int_mass_' + TS]) #For completeness only.
-        self.L = 10.**(-0.4 * (self.D['mag1_' + TS] - 4.65)) 
+        self.L = 10.**(-0.4 * (self.D['mag0_' + TS] - filter2sunmag[self._inputs.f0])) 
         self.sSNRL = np.divide(self.sSNR,self.L)
 
