@@ -28,7 +28,9 @@ class Build_Fsps(object):
         self.D['t_ons'] = self._inputs.t_onset.to(u.Gyr).value
         self.D['t_bre'] = self._inputs.t_cutoff.to(u.Gyr).value
 
-        synpop_dir = os.path.join('./../fsps_files/' + self._inputs.fsps_path)   
+        synpop_dir = os.path.join(
+          os.path.dirname(os.path.abspath( __file__ )),
+          '../fsps_files/', self._inputs.fsps_path)   
         
         #Get SSP data and compute the theoretical color with respect to the RS.
         df = pd.read_csv(synpop_dir + 'SSP.dat', header=0, escapechar='#')
