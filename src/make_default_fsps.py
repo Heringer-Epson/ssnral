@@ -192,6 +192,12 @@ if __name__ == '__main__':
     #IMF.
     #Make_FSPS(imf='Chabrier', sfh='exponential', Z='0.0190', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
     #Make_FSPS(imf='Salpeter', sfh='exponential', Z='0.0190', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
+    
+    #Additional tracks with Chabrier and Salpeter IMFs for other than solar Z.
+    #Make_FSPS(imf='Chabrier', sfh='exponential', Z='0.0096', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
+    #Make_FSPS(imf='Chabrier', sfh='exponential', Z='0.0300', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
+    #Make_FSPS(imf='Salpeter', sfh='exponential', Z='0.0096', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
+    #Make_FSPS(imf='Salpeter', sfh='exponential', Z='0.0300', fbhb=0.0, dust=0, spec_lib='BASEL', isoc_lib='PADOVA')
 
     #=-=-=-=-=-=-=-=-=-=- RECOMPILE FSPS BEFORE RUNNING THESE -=-=-=-=-=-=-=-=-
     #Instructions:
