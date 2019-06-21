@@ -7,7 +7,7 @@ import matplotlib as mpl
 from matplotlib.ticker import MultipleLocator
 from astropy import units as u
 
-from generic_input_pars import Generic_Pars
+from input_pars import Pars
 from build_fsps_model import Build_Fsps
 from Dcolor2sSNRL_gen import Generate_Curve
 from SN_rate import Model_Rates
@@ -99,7 +99,7 @@ class Plot_Tests(object):
     def plot_models(self):
 
         for k, Z in enumerate(['0.0150', '0.0190', '0.0300']):
-            _inputs = Generic_Pars('exponential', 'Kroupa', Z, 100.e6 * u.yr)
+            _inputs = Pars('exponential', 'Kroupa', Z, 100.e6 * u.yr)
             _D = Build_Fsps(_inputs).D        
 
             for i, (s1,s2) in enumerate(s1s2):
@@ -112,7 +112,7 @@ class Plot_Tests(object):
                     self.ax1.text(0.05, y[-1] + 0.05, label[i], color='k', fontsize=fs)
         
         for k, t_ons in enumerate([40.e6 * u.yr, 70.e6 * u.yr, 100.e6 * u.yr]):
-            _inputs = Generic_Pars('exponential', 'Kroupa', '0.0190', t_ons)
+            _inputs = Pars('exponential', 'Kroupa', '0.0190', t_ons)
             _D = Build_Fsps(_inputs).D        
 
             for i, (s1,s2) in enumerate(s1s2):

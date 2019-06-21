@@ -3,7 +3,7 @@
 import numpy as np
 from astropy import units as u
 
-from generic_input_pars import Generic_Pars
+from input_pars import Pars
 from build_fsps_model import Build_Fsps
 from Dcolor2sSNRL_gen import Generate_Curve
 from SN_rate import Model_Rates
@@ -49,7 +49,7 @@ class Produce_Function(object):
     def __init__(self, A, s1, s2, t_onset, t_cutoff, Z, sfh, imf):
 
         #Create a class containing input parameters.
-        _inputs = Generic_Pars(
+        _inputs = Pars(
           sfh_type=sfh, imf_type=imf, Z=Z, t_onset=t_onset, t_cutoff=t_cutoff)
         
         #Computes quantities which require FSPS photometry, such as Delta(g-r).
