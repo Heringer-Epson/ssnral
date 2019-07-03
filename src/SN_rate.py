@@ -35,7 +35,7 @@ class Model_Rates(object):
                    
         const_s2 = np.power(self.D['t_bre'], self.s1 - self.s2)
         
-        lib = ctypes.CDLL(os.environ['PATH_ssnarl'] + 'src/DTD_gen.so')
+        lib = ctypes.CDLL('./DTD_gen.so')
         
         if self._inputs.sfh_type == 'exponential':
             int_f = lib.conv_exponential_sSNR
