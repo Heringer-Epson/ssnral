@@ -28,8 +28,13 @@ class Build_Fsps(object):
         self.D['t_ons'] = self._inputs.t_onset.to(u.Gyr).value
         self.D['t_bre'] = self._inputs.t_cutoff.to(u.Gyr).value
 
-        synpop_dir = os.path.join('./../fsps_files/' + self._inputs.fsps_path)   
-        
+        #Improve this.
+        #abs_dir = os.path.split(os.path.abspath(os.path.realpath(sys.argv[0])))[0]
+        try:
+            synpop_dir = os.path.join(os.environ['PATH_ssnarl'] + 'fsps_files/' + self._inputs.fsps_path)
+        except:
+            synpop_dir = os.path.join('./../fsps_files/' + self._inputs.fsps_path)
+
         #Get SSP data and compute the theoretical color with respect to the RS.
         df = pd.read_csv(synpop_dir + 'SSP.dat', header=0, escapechar='#')
         logage_SSP = df[' log_age'].values
